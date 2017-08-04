@@ -26,12 +26,16 @@ echo "Defina las direcciones ip  privadas de los nodos del cluster"
 sleep 4
 echo "Ip-1"
 read IP1
+sleep 4
 echo "Ip-2"
 read IP2
+sleep 4
 echo "Ip-3"
 read IP3
+sleep 4
 echo "Ip-4"
 read IP4
+sleep 4
 echo "Ip-5"
 read IP5
 arrIN1=(${IP1//./ })
