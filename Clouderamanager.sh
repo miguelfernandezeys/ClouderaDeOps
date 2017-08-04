@@ -52,7 +52,7 @@ cat /etc/hosts
 #Instalacion de repo MariaDB 10.0
 > /etc/yum.repos.d/MariaDB.repo
 echo "
-# MariaDB 10.0 CentOS repository list - created 2017-08-03 15:06 UTC
+# MariaDB 10.0 CentOS repository list - created 2017-08-04 03:32 UTC
 # http://downloads.mariadb.org/mariadb/repositories/
 [mariadb]
 name = MariaDB
@@ -63,6 +63,7 @@ gpgcheck=1
 cat /etc/yum.repos.d/MariaDB.repo
 #Instalacion de MariaDB-server y MariaDB-client
 yum repolist
+sleep 4
 yum -y install MariaDB-server MariaDB-client
 systemctl enable mysql
 systemctl start mysql
