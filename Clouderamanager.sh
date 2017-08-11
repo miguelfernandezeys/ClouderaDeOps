@@ -73,9 +73,6 @@ gpgcheck=1
 
 cat /etc/yum.repos.d/MariaDB.repo
 #Instalacion de MariaDB-server y MariaDB-client
-
-yum repolist
-
 sleep 4
 
 yum -y install MariaDB-server MariaDB-client
