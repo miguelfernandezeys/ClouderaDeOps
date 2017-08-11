@@ -75,6 +75,10 @@ cat /etc/yum.repos.d/MariaDB.repo
 #Instalacion de MariaDB-server y MariaDB-client
 sleep 4
 
+yum -y update
+
+sleep 4
+
 yum -y install MariaDB-server MariaDB-client
 
 systemctl enable mysql
