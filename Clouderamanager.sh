@@ -84,32 +84,15 @@ yum -y install MariaDB-server MariaDB-client
 systemctl enable mysql
 systemctl start mysql
 systemctl status mysql
-#mysql_secure_installation
-yum -y install expect
+#mysql_secure_installation configuración
+mysql --user=root <<_EOF_
+UPDATE mysql.user SET Password=PASSWORD('${db_root_password}') WHERE User='root';
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+FLUSH PRIVILEGES;
+_EOF_
 
+sleep 4
 
-MYSQL_ROOT_PASSWORD=abcd1234
-
-SECURE_MYSQL=$(expect -c "
-set timeout 10
-spawn mysql_secure_installation
-expect \"Enter current password for root (enter for none):\"
-send \"\r\"
-expect \"Change the root password?\"
-send \"y\r\"
-expect \"New password\"
-send \"hola\r\"
-expect \"Re-enter new password\"
-send \"hola\r\"
-expect \"Remove anonymous users?\"
-send \"y\r\"
-expect \"Disallow root login remotely?\"
-send \"y\r\"
-expect \"Remove test database and access to it?\"
-send \"y\r\"
-expect \"Reload privilege tables now?\"
-send \"y\r\"
-expect eof
-")
-echo "$SECURE_MYSQL"
-yum -y purge expect
