@@ -1,5 +1,8 @@
 #!/bin/sh
 DIR=.us-west-2-compute.internal
+SQL_HOST=localhost
+SQL_USUARIO=root
+SQL_PASSWORD=1234567
 # Instalar las actualizaciones del sistema
 yum -y update
 #Instalar paquetes wget,ntp,nscd
@@ -8,6 +11,9 @@ yum -y install wget ntp nscd
 systemctl enable ntpd nscd
 systemctl start ntpd nscd
 systemctl status ntpd nscd
+
+sleep 4
+
 #Configura demonios para iniciar con el SO 
 chkconfig ntpd on
 chkconfig nscd on
@@ -84,15 +90,64 @@ yum -y install MariaDB-server MariaDB-client
 systemctl enable mysql
 systemctl start mysql
 systemctl status mysql
+
 #mysql_secure_installation configuración
-mysql --user=root <<_EOF_
-UPDATE mysql.user SET Password=PASSWORD('${db_root_password}') WHERE User='root';
+mysql --user=root <<_EOF
+UPDATE mysql.user SET Password=PASSWORD("$SQL_PASSWORD") WHERE User='root';
 DELETE FROM mysql.user WHERE User='';
-DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 FLUSH PRIVILEGES;
-_EOF_
+_EOF
 
 sleep 4
+
+SQL_ARGS="-h $SQL_HOST -u $SQL_USUARIO -p$SQL_PASSWORD -s -e"
+
+mysql $SQL_ARGS 'create database scm DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `scm`@`localhost` IDENTIFIED BY `scm`;'
+mysql $SQL_ARGS 'grant all on scm.* TO `scm`@`%` IDENTIFIED BY `scm`;'
+
+mysql $SQL_ARGS 'create database amon DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `amon`@`localhost` IDENTIFIED BY `amon`;'
+mysql $SQL_ARGS 'grant all on amon.* TO `amon`@`%` IDENTIFIED BY `amon`;'
+
+mysql $SQL_ARGS 'create database rman DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `rman`@`localhost` IDENTIFIED BY `rman`;'
+mysql $SQL_ARGS 'grant all on rman.* TO `rman`@`%` IDENTIFIED BY `rman`;'
+
+mysql $SQL_ARGS 'create database metastore DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `metastore`@`localhost` IDENTIFIED BY `metastore`;'
+mysql $SQL_ARGS 'grant all on metastore.* TO `metastore`@`%` IDENTIFIED BY `metastore`;'
+
+mysql $SQL_ARGS 'create database sentry DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `sentry`@`localhost` IDENTIFIED BY `sentry`;'
+mysql $SQL_ARGS 'grant all on sentry.* TO `sentry`@`%` IDENTIFIED BY `sentry`;'
+
+mysql $SQL_ARGS 'create database nav DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `nav`@`localhost` IDENTIFIED BY `nav`;'
+mysql $SQL_ARGS 'grant all on nav.* TO `nav`@`%` IDENTIFIED BY `nav`;'
+
+mysql $SQL_ARGS 'create database navms DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `navms`@`localhost` IDENTIFIED BY `navms`;'
+mysql $SQL_ARGS 'grant all on navms.* TO `navms`@`%` IDENTIFIED BY `navms`;'
+
+mysql $SQL_ARGS 'create database hue DEFAULT CHARACTER SET utf8;'
+mysql $SQL_ARGS 'create user `hue`@`localhost` IDENTIFIED BY `hue`;'
+mysql $SQL_ARGS 'grant all on hue.* to `hue`@`localhost` identified by `hue`;'
+
+mysql $SQL_ARGS 'create database oozie;'
+mysql $SQL_ARGS 'create user `oozie`@`localhost` IDENTIFIED BY `oozie`;'
+mysql $SQL_ARGS 'grant all privileges on oozie.* to `oozie`@`localhost` identified by `oozie`;'
+mysql $SQL_ARGS 'grant all privileges on oozie.* to `oozie`@`%` identified by `oozie`;'
+
+mysql $SQL_ARGS 'create database sqoop;'
+mysql $SQL_ARGS 'create user `sqoop`@`localhost` IDENTIFIED BY `sqoop`;'
+mysql $SQL_ARGS 'grant all privileges on sqoop.* to `sqoop`@`localhost` identified by `sqoop`;'
+mysql $SQL_ARGS 'grant all privileges on sqoop.* to `sqoop`@`%` identified by `sqoop`;'
+ 
+sleep 4
+
+
+
 
