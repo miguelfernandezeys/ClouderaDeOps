@@ -98,55 +98,50 @@ DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 FLUSH PRIVILEGES;
+create database scm DEFAULT CHARACTER SET utf8;
+create user 'scm'@'localhost' IDENTIFIED BY 'scm';
+grant all on scm.* TO 'scm'@'%' IDENTIFIED BY 'scm';
+
+create database amon DEFAULT CHARACTER SET utf8;
+create user 'amon'@'localhost' IDENTIFIED BY 'amon';
+grant all on amon.* TO 'amon'@'%' IDENTIFIED BY 'amon';
+
+create database rman DEFAULT CHARACTER SET utf8;
+create user 'rman'@'localhost' IDENTIFIED BY 'rman';
+grant all on rman.* TO 'rman'@'%' IDENTIFIED BY 'rman';
+
+create database metastore DEFAULT CHARACTER SET utf8;
+create user 'metastore'@'localhost' IDENTIFIED BY 'metastore';
+grant all on metastore.* TO 'metastore'@'%' IDENTIFIED BY 'metastore';
+
+create database sentry DEFAULT CHARACTER SET utf8;
+create user 'sentry'@'localhost' IDENTIFIED BY 'sentry';
+grant all on sentry.* TO 'sentry'@'%' IDENTIFIED BY 'sentry';
+
+create database nav DEFAULT CHARACTER SET utf8;
+create user 'nav'@'localhost' IDENTIFIED BY 'nav';
+grant all on nav.* TO 'nav'@'%' IDENTIFIED BY 'nav';
+
+create database navms DEFAULT CHARACTER SET utf8;
+create user 'navms'@'localhost' IDENTIFIED BY 'navms';
+grant all on navms.* TO 'navms'@'%' IDENTIFIED BY 'navms';
+
+create database hue DEFAULT CHARACTER SET utf8;
+create user 'hue'@'localhost' IDENTIFIED BY 'hue';
+grant all on hue.* to 'hue'@'localhost' identified by 'hue';
+
+create database oozie;
+create user 'oozie'@'localhost' IDENTIFIED BY 'oozie';
+grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'oozie';
+grant all privileges on oozie.* to 'oozie'@'%' identified by 'oozie';
+
+create database sqoop;
+create user 'sqoop'@'localhost' IDENTIFIED BY 'sqoop';
+grant all privileges on sqoop.* to 'sqoop'@'localhost' identified by 'sqoop';
+grant all privileges on sqoop.* to 'sqoop'@'%' identified by 'sqoop';
+
 _EOF
 
-sleep 4
-
-SQL_ARGS="-h $SQL_HOST -u $SQL_USUARIO -p$SQL_PASSWORD -s -e"
-
-mysql $SQL_ARGS 'create database scm DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `scm`@`localhost` IDENTIFIED BY `scm`;'
-mysql $SQL_ARGS 'grant all on scm.* TO `scm`@`%` IDENTIFIED BY `scm`;'
-
-mysql $SQL_ARGS 'create database amon DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `amon`@`localhost` IDENTIFIED BY `amon`;'
-mysql $SQL_ARGS 'grant all on amon.* TO `amon`@`%` IDENTIFIED BY `amon`;'
-
-mysql $SQL_ARGS 'create database rman DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `rman`@`localhost` IDENTIFIED BY `rman`;'
-mysql $SQL_ARGS 'grant all on rman.* TO `rman`@`%` IDENTIFIED BY `rman`;'
-
-mysql $SQL_ARGS 'create database metastore DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `metastore`@`localhost` IDENTIFIED BY `metastore`;'
-mysql $SQL_ARGS 'grant all on metastore.* TO `metastore`@`%` IDENTIFIED BY `metastore`;'
-
-mysql $SQL_ARGS 'create database sentry DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `sentry`@`localhost` IDENTIFIED BY `sentry`;'
-mysql $SQL_ARGS 'grant all on sentry.* TO `sentry`@`%` IDENTIFIED BY `sentry`;'
-
-mysql $SQL_ARGS 'create database nav DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `nav`@`localhost` IDENTIFIED BY `nav`;'
-mysql $SQL_ARGS 'grant all on nav.* TO `nav`@`%` IDENTIFIED BY `nav`;'
-
-mysql $SQL_ARGS 'create database navms DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `navms`@`localhost` IDENTIFIED BY `navms`;'
-mysql $SQL_ARGS 'grant all on navms.* TO `navms`@`%` IDENTIFIED BY `navms`;'
-
-mysql $SQL_ARGS 'create database hue DEFAULT CHARACTER SET utf8;'
-mysql $SQL_ARGS 'create user `hue`@`localhost` IDENTIFIED BY `hue`;'
-mysql $SQL_ARGS 'grant all on hue.* to `hue`@`localhost` identified by `hue`;'
-
-mysql $SQL_ARGS 'create database oozie;'
-mysql $SQL_ARGS 'create user `oozie`@`localhost` IDENTIFIED BY `oozie`;'
-mysql $SQL_ARGS 'grant all privileges on oozie.* to `oozie`@`localhost` identified by `oozie`;'
-mysql $SQL_ARGS 'grant all privileges on oozie.* to `oozie`@`%` identified by `oozie`;'
-
-mysql $SQL_ARGS 'create database sqoop;'
-mysql $SQL_ARGS 'create user `sqoop`@`localhost` IDENTIFIED BY `sqoop`;'
-mysql $SQL_ARGS 'grant all privileges on sqoop.* to `sqoop`@`localhost` identified by `sqoop`;'
-mysql $SQL_ARGS 'grant all privileges on sqoop.* to `sqoop`@`%` identified by `sqoop`;'
- 
-sleep 4
 
 
 
