@@ -78,6 +78,21 @@ gpgcheck=1
 " >> /etc/yum.repos.d/MariaDB.repo
 
 cat /etc/yum.repos.d/MariaDB.repo
+
+#Instalación de cloudera-manager repo
+
+> /etc/yum.repos.d/Cloudera.repo
+
+echo "
+[cloudera-manager]
+# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64           	  
+name=Cloudera Manager
+baseurl=https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/511.1/
+gpgkey =https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/RPM-GPG-KEY-cloudera    
+gpgcheck = 1
+" >> /etc/yum.repos.d/Cloudera.repo
+
+cat /etc/yum.repos.d/MariaDB.repo
 #Instalacion de MariaDB-server y MariaDB-client
 sleep 4
 
@@ -142,6 +157,34 @@ grant all privileges on sqoop.* to 'sqoop'@'%' identified by 'sqoop';
 
 _EOF
 
+sleep 3
+#Instalacion de java 1.7
+sudo yum install java-1.7.0-openjdk
+java -version
+
+sleep 3 
+
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.42.tar.gz
+tar zxvf mysql-connector-java-5.1.42.tar.gz
+cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
+
+sleep 1
+
+sudo yum install cloudera-manager-daemons cloudera-manager-server
+
+sudo yum install cloudera-manager-agent cloudera-manager-daemons
+
+cd /usr/share/cmf/schema
+
+./scm_prepare_database.sh mysql scm scm scm  
+
+sleep 4
+
+sudo service cloudera-scm-server enable
+sudo service cloudera-scm-server start
+sudo service cloudera-scm-server status
+sudo service cloudera-scm-agent enable
+sudo service cloudera-scm-agent-start
 
 
 
