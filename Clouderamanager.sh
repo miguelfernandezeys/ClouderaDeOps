@@ -1,8 +1,14 @@
 #!/bin/sh
-DIR=.us-west-2-compute.internal
+#variables
 SQL_HOST=localhost
 SQL_USUARIO=root
 SQL_PASSWORD=1234567
+FILEHOST=/etc/hosts
+FILESYS=/etc/sysctl.conf
+FILESELI=/etc/selinux/config
+FILERC=/etc/rc.local
+FILECLO=/etc/yum.repos.d/cloudera-manager.repo
+FILEJAVA=/root/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
 # Instalar las actualizaciones del sistema
 yum -y update
 #Instalar paquetes wget,ntp,nscd
@@ -13,6 +19,12 @@ systemctl start ntpd nscd
 systemctl status ntpd nscd
 
 sleep 4
+
+# Descarga de JDBC de MySQL
+
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.42.tar.gz
+
+tar zxvf mysql-connector-java-5.1.42.tar.gz
 
 #Configura demonios para iniciar con el SO 
 chkconfig ntpd on
@@ -27,28 +39,7 @@ echo 'echo "never" > /sys/kernel/mm/transparent_hugepage/defrag' >> /etc/rc.loca
 #Modificar valor de Selinux
 sed 's/SELINUX=enforcing/SELINUX=disabled/g' -i /etc/selinux/config
 cat /etc/selinux/config
-#Configuracion de hosts
 
-file "./nodos.properties"
-
-if [ -f "$file" ];
-
-then 
-    echo "$file found"
-. $file
-else 
-    echo "$file not found"
-fi
-k=0
-for i in "${hosts[@]}";
-do 
-    echo ${hosts[k]}  ${dns[k]} >> /etc/hosts
-
-k=$k+1
-
-done
-
-cat /etc/hosts
 #Instalacion de repo MariaDB 10.0
 > /etc/yum.repos.d/MariaDB.repo
 
@@ -64,6 +55,8 @@ gpgcheck=1
 
 cat /etc/yum.repos.d/MariaDB.repo
 
+sleep 4
+
 #Instalación de cloudera-manager repo
 
 > /etc/yum.repos.d/cloudera-manager.repo
@@ -78,6 +71,62 @@ gpgcheck = 1
 " >> /etc/yum.repos.d/cloudera-manager.repo
 
 cat /etc/yum.repos.d/cloudera-manager.repo
+
+sleep 4
+
+#Configuracion de hosts
+
+chmod 600 ~/Glpi.pem
+
+file "./nodos.properties"
+
+if [ -f "$file" ];
+
+then 
+    echo "$file found"
+. $file
+else 
+    echo "$file not found"
+fi
+k=0
+for i in "${hosts[@]}";
+do 
+    echo ${hosts[k]}  ${dns[k]} >> /etc/hosts
+   
+k=$k+1
+
+done
+
+k=1
+
+for i in "${hosts[@]}";
+do 
+scp -i "Glpi.pem" "$FILEHOST" ec2-user@${hosts[k]}:/home/ec2-user
+
+scp -i "Glpi.pem" "$FILESYS" ec2-user@${hosts[k]}:/home/ec2-user
+
+scp -i "Glpi.pem" "$FILESELI" ec2-user@${hosts[k]}:/home/ec2-user
+
+scp -i "Glpi.pem" "$FILERC" ec2-user@${hosts[k]}:/home/ec2-user
+
+scp -i "Glpi.pem" "$FILECLO" ec2-user@${hosts[k]}:/home/ec2-user
+
+scp -i "Glpi.pem" "$FILEJAVA" ec2-user@${hosts[k]}:/home/ec2-user
+
+ssh -i "Glpi.pem"  ec2-user@${hosts[k]}"sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
+
+ssh -i "Glpi.pem"  ec2-user@${hosts[k]}"sudo cp /home/ec2-user/hosts /etc | sudo cp /home/ec2-user/sysctl.conf /etc | sudo cp /home/ec2-user/config /etc/selinux | sudo cp /home/ec2-user/rc.local /etc | sudo cp /home/ec2-user/cloudera-manager.repo /etc/yum.repos.d "
+
+ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo yum -y update | sudo yum -y install ntp nscd wget | sudo systemctl enable ntpd nscd | sudo systemctl start ntpd nscd "
+
+ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo mkdir /user/share/java | sudo cp /home/ec2-user/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar"
+
+ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo yum -y install  cloudera-manager-daemons cloudera-manager-agent |sudo service cloudera-scm-agent enable | sudo service cloudera-scm-agent start "
+
+
+k=$k+1
+
+done
 
 #Instalacion de MariaDB-server y MariaDB-client
 sleep 4
@@ -148,12 +197,6 @@ sleep 3
 sudo yum -y install java-1.7.0-openjdk
 
 java -version
-
-sleep 3 
-
-wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.42.tar.gz
-
-tar zxvf mysql-connector-java-5.1.42.tar.gz
 
 cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
 
