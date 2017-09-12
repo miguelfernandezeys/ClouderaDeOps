@@ -35,33 +35,10 @@ echo "Ip-1"
 
 read IP1
 
-echo "Ip-2"
-
-read IP2
-
-echo "Ip-3"
-
-read IP3
-
-echo "Ip-4"
-
-read IP4
-
-echo "Ip-5"
-
-read IP5
-
 arrIN1=(${IP1//./ })
-arrIN2=(${IP2//./ })
-arrIN3=(${IP3//./ })
-arrIN4=(${IP4//./ })
-arrIN5=(${IP5//./ })
 
 echo "$IP1 			ip-${arrIN1[0]}-${arrIN1[1]}-${arrIN1[2]}-${arrIN1[3]}$DIR" >> /etc/hosts
-echo "$IP2 			ip-${arrIN2[0]}-${arrIN2[1]}-${arrIN2[2]}-${arrIN2[3]}$DIR" >> /etc/hosts
-echo "$IP3 			ip-${arrIN3[0]}-${arrIN3[1]}-${arrIN3[2]}-${arrIN3[3]}$DIR" >> /etc/hosts
-echo "$IP4 			ip-${arrIN4[0]}-${arrIN4[1]}-${arrIN4[2]}-${arrIN4[3]}$DIR" >> /etc/hosts
-echo "$IP5 			ip-${arrIN5[0]}-${arrIN5[1]}-${arrIN5[2]}-${arrIN5[3]}$DIR" >> /etc/hosts
+
 
 cat /etc/hosts
 #Instalacion de repo MariaDB 10.0
@@ -85,10 +62,10 @@ cat /etc/yum.repos.d/MariaDB.repo
 
 echo "
 [cloudera-manager]
-# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64           	  
+# Packages for Cloudera Manager, Version 5, on RedHat or CentOS 7 x86_64
 name=Cloudera Manager
-baseurl=https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/511.1/
-gpgkey =https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/RPM-GPG-KEY-cloudera    
+baseurl=https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.11.1/
+gpgkey =https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/RPM-GPG-KEY-cloudera
 gpgcheck = 1
 " >> /etc/yum.repos.d/Cloudera.repo
 
@@ -159,20 +136,23 @@ _EOF
 
 sleep 3
 #Instalacion de java 1.7
-sudo yum install java-1.7.0-openjdk
+sudo yum -y install java-1.7.0-openjdk
+
 java -version
 
 sleep 3 
 
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.42.tar.gz
+
 tar zxvf mysql-connector-java-5.1.42.tar.gz
+
 cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
 
 sleep 1
 
-sudo yum install cloudera-manager-daemons cloudera-manager-server
+sudo yum -y install cloudera-manager-daemons cloudera-manager-server
 
-sudo yum install cloudera-manager-agent cloudera-manager-daemons
+sudo yum -y install cloudera-manager-agent cloudera-manager-daemons
 
 cd /usr/share/cmf/schema
 
@@ -181,9 +161,21 @@ cd /usr/share/cmf/schema
 sleep 4
 
 sudo service cloudera-scm-server enable
+
+sleep 1
+
 sudo service cloudera-scm-server start
+
+sleep 1
+
 sudo service cloudera-scm-server status
+
+sleep 1
+
 sudo service cloudera-scm-agent enable
+
+sleep 1
+
 sudo service cloudera-scm-agent-start
 
 
