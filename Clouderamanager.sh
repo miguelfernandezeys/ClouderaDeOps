@@ -104,27 +104,27 @@ k=1
 
 for i in "${hosts[@]}";
 do 
-scp -i "Glpi.pem" "$FILEHOST" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILEHOST" centos@${hosts[k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILESYS" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILESYS" centos@${hosts[k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILESELI" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILESELI" centos@${hosts[k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILERC" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILERC" centos@${hosts[k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILECLO" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILECLO" centos@${hosts[k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILEJAVA" ec2-user@${hosts[k]}:/home/ec2-user
+scp -i "Glpi.pem" "$FILEJAVA" centos@${hosts[k]}:/home/centos
 
-ssh -i "Glpi.pem"  ec2-user@${hosts[k]}"sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
+ssh -i "Glpi.pem"  centos@${hosts[k]}"sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
 
-ssh -i "Glpi.pem"  ec2-user@${hosts[k]}"sudo cp /home/ec2-user/hosts /etc | sudo cp /home/ec2-user/sysctl.conf /etc | sudo cp /home/ec2-user/config /etc/selinux | sudo cp /home/ec2-user/rc.local /etc | sudo cp /home/ec2-user/cloudera-manager.repo /etc/yum.repos.d "
+ssh -i "Glpi.pem"  centos@${hosts[k]}"sudo cp /home/centos/hosts /etc | sudo cp /home/centos/sysctl.conf /etc | sudo cp /home/centos/config /etc/selinux | sudo cp /home/centos/rc.local /etc | sudo cp /home/centos/cloudera-manager.repo /etc/yum.repos.d "
 
-ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo yum -y update | sudo yum -y install ntp nscd wget | sudo systemctl enable ntpd nscd | sudo systemctl start ntpd nscd "
+ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo yum -y update | sudo yum -y install ntp nscd wget | sudo systemctl enable ntpd nscd | sudo systemctl start ntpd nscd "
 
-ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo mkdir /user/share/java | sudo cp /home/ec2-user/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar"
+ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo mkdir /user/share/java | sudo cp /home/centos/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar"
 
-ssh -i "Glpi.pem"  ec2-user@${hosts[k]} "sudo yum -y install  cloudera-manager-daemons cloudera-manager-agent |sudo service cloudera-scm-agent enable | sudo service cloudera-scm-agent start "
+ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo yum -y install  cloudera-manager-daemons cloudera-manager-agent |sudo service cloudera-scm-agent enable | sudo service cloudera-scm-agent start "
 
 
 k=$k+1
@@ -154,45 +154,35 @@ FLUSH PRIVILEGES;
 create database scm DEFAULT CHARACTER SET utf8;
 create user 'scm'@'localhost' IDENTIFIED BY 'scm';
 grant all on scm.* TO 'scm'@'%' IDENTIFIED BY 'scm';
-
 create database amon DEFAULT CHARACTER SET utf8;
 create user 'amon'@'localhost' IDENTIFIED BY 'amon';
 grant all on amon.* TO 'amon'@'%' IDENTIFIED BY 'amon';
-
 create database rman DEFAULT CHARACTER SET utf8;
 create user 'rman'@'localhost' IDENTIFIED BY 'rman';
 grant all on rman.* TO 'rman'@'%' IDENTIFIED BY 'rman';
-
 create database metastore DEFAULT CHARACTER SET utf8;
 create user 'metastore'@'localhost' IDENTIFIED BY 'metastore';
 grant all on metastore.* TO 'metastore'@'%' IDENTIFIED BY 'metastore';
-
 create database sentry DEFAULT CHARACTER SET utf8;
 create user 'sentry'@'localhost' IDENTIFIED BY 'sentry';
 grant all on sentry.* TO 'sentry'@'%' IDENTIFIED BY 'sentry';
-
 create database nav DEFAULT CHARACTER SET utf8;
 create user 'nav'@'localhost' IDENTIFIED BY 'nav';
 grant all on nav.* TO 'nav'@'%' IDENTIFIED BY 'nav';
-
 create database navms DEFAULT CHARACTER SET utf8;
 create user 'navms'@'localhost' IDENTIFIED BY 'navms';
 grant all on navms.* TO 'navms'@'%' IDENTIFIED BY 'navms';
-
 create database hue DEFAULT CHARACTER SET utf8;
 create user 'hue'@'localhost' IDENTIFIED BY 'hue';
 grant all on hue.* to 'hue'@'localhost' identified by 'hue';
-
 create database oozie;
 create user 'oozie'@'localhost' IDENTIFIED BY 'oozie';
 grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'oozie';
 grant all privileges on oozie.* to 'oozie'@'%' identified by 'oozie';
-
 create database sqoop;
 create user 'sqoop'@'localhost' IDENTIFIED BY 'sqoop';
 grant all privileges on sqoop.* to 'sqoop'@'localhost' identified by 'sqoop';
 grant all privileges on sqoop.* to 'sqoop'@'%' identified by 'sqoop';
-
 _EOF
 
 sleep 3
@@ -232,7 +222,6 @@ sudo service cloudera-scm-agent enable
 sleep 1
 
 sudo service cloudera-scm-agent-start
-
 
 
 
