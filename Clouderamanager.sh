@@ -1,4 +1,7 @@
 #!/bin/sh
+# redirect stdout/stderr to a file
+exec &> logfile.log
+
 #variables
 SQL_HOST=localhost
 SQL_USUARIO=root
