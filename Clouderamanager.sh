@@ -28,17 +28,25 @@ echo 'echo "never" > /sys/kernel/mm/transparent_hugepage/defrag' >> /etc/rc.loca
 sed 's/SELINUX=enforcing/SELINUX=disabled/g' -i /etc/selinux/config
 cat /etc/selinux/config
 #Configuracion de hosts
-echo "Defina las direcciones ip  privadas de los nodos del cluster"
-sleep 4
 
-echo "Ip-1"
+file "./nodos.properties"
 
-read IP1
+if [ -f "$file" ];
 
-arrIN1=(${IP1//./ })
+then 
+    echo "$file found"
+. $file
+else 
+    echo "$file not found"
+fi
+k=0
+for i in "${hosts[@]}";
+do 
+    echo ${hosts[k]}  ${dns[k]} >> /etc/hosts
 
-echo "$IP1 			ip-${arrIN1[0]}-${arrIN1[1]}-${arrIN1[2]}-${arrIN1[3]}$DIR" >> /etc/hosts
+k=$k+1
 
+done
 
 cat /etc/hosts
 #Instalacion de repo MariaDB 10.0
@@ -58,7 +66,7 @@ cat /etc/yum.repos.d/MariaDB.repo
 
 #Instalación de cloudera-manager repo
 
-> /etc/yum.repos.d/Cloudera.repo
+> /etc/yum.repos.d/cloudera-manager.repo
 
 echo "
 [cloudera-manager]
@@ -67,9 +75,10 @@ name=Cloudera Manager
 baseurl=https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.11.1/
 gpgkey =https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/RPM-GPG-KEY-cloudera
 gpgcheck = 1
-" >> /etc/yum.repos.d/Cloudera.repo
+" >> /etc/yum.repos.d/cloudera-manager.repo
 
-cat /etc/yum.repos.d/MariaDB.repo
+cat /etc/yum.repos.d/cloudera-manager.repo
+
 #Instalacion de MariaDB-server y MariaDB-client
 sleep 4
 
