@@ -11,7 +11,7 @@ FILESYS=/etc/sysctl.conf
 FILESELI=/etc/selinux/config
 FILERC=/etc/rc.local
 FILECLO=/etc/yum.repos.d/cloudera-manager.repo
-FILEJAVA=/root/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
+FILEJAVA=/root/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar
 # Instalar las actualizaciones del sistema
 yum -y update
 #Instalar paquetes wget,ntp,nscd
@@ -79,55 +79,59 @@ sleep 4
 
 #Configuracion de hosts
 
-chmod 600 ~/Glpi.pem
+chmod 600 ~/cluster_test_biba.pem
 
-file "./nodos.properties"
+cd
+
+file="./nodos.properties"
 
 if [ -f "$file" ];
 
-then 
+then
     echo "$file found"
 . $file
-else 
+else
     echo "$file not found"
 fi
 k=0
 for i in "${hosts[@]}";
-do 
+do
     echo ${hosts[k]}  ${dns[k]} >> /etc/hosts
-   
+
 k=$k+1
 
 done
 
 k=1
 
-for i in "${hosts[@]}";
-do 
-scp -i "Glpi.pem" "$FILEHOST" centos@${hosts[k]}:/home/centos
+while [ $k -lt ${#hosts[@]} ];do
 
-scp -i "Glpi.pem" "$FILESYS" centos@${hosts[k]}:/home/centos
+scp -i "cluster_test_biba.pem" "$FILEHOST" centos@${hosts[$k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILESELI" centos@${hosts[k]}:/home/centos
+scp -i "cluster_test_biba.pem" "$FILESYS" centos@${hosts[$k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILERC" centos@${hosts[k]}:/home/centos
+scp -i "cluster_test_biba.pem" "$FILESELI" centos@${hosts[$k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILECLO" centos@${hosts[k]}:/home/centos
+scp -i "cluster_test_biba.pem" "$FILERC" centos@${hosts[$k]}:/home/centos
 
-scp -i "Glpi.pem" "$FILEJAVA" centos@${hosts[k]}:/home/centos
+scp -i "cluster_test_biba.pem" "$FILECLO" centos@${hosts[$k]}:/home/centos
 
-ssh -i "Glpi.pem"  centos@${hosts[k]}"sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
+scp -i "cluster_test_biba.pem" "$FILEJAVA" centos@${hosts[$k]}:/home/centos
 
-ssh -i "Glpi.pem"  centos@${hosts[k]}"sudo cp /home/centos/hosts /etc | sudo cp /home/centos/sysctl.conf /etc | sudo cp /home/centos/config /etc/selinux | sudo cp /home/centos/rc.local /etc | sudo cp /home/centos/cloudera-manager.repo /etc/yum.repos.d "
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
 
-ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo yum -y update | sudo yum -y install ntp nscd wget | sudo systemctl enable ntpd nscd | sudo systemctl start ntpd nscd "
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo cp /home/centos/hosts /etc | sudo cp /home/centos/sysctl.conf /etc | sudo cp /home/centos/config /etc/selinux | sudo cp /home/centos/rc.local /etc | sudo cp /home/centos/cloudera-manager.repo /etc/yum.repos.d |sudo mkdir /usr/share/java | sudo cp /home/centos/mysql-connector-java-5.1.42-bin.jar /usr/share/java"
 
-ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo mkdir /user/share/java | sudo cp /home/centos/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo yum -y update"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo yum -y install ntp nscd wget"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo systemctl enable ntpd nscd"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo systemctl start ntpd nscd"
 
-ssh -i "Glpi.pem"  centos@${hosts[k]} "sudo yum -y install  cloudera-manager-daemons cloudera-manager-agent |sudo service cloudera-scm-agent enable | sudo service cloudera-scm-agent start "
 
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo yum -y install  cloudera-manager-daemons cloudera-manager-agent"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo service cloudera-scm-agent enable | sudo service cloudera-scm-agent start"
 
-k=$k+1
+let k=k+1
 
 done
 
