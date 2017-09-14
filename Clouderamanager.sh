@@ -195,7 +195,7 @@ sudo yum -y install java-1.7.0-openjdk
 
 java -version
 
-cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
+cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/
 
 sleep 1
 
