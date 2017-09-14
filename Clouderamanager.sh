@@ -120,7 +120,7 @@ scp -i "cluster_test_biba.pem" "$FILEJAVA" centos@${hosts[$k]}:/home/centos
 
 ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo echo "never" > /sys/kernel/mm/transparent_hugepage/defrag | sudo echo "never" > /sys/kernel/mm/transparent_hugepage/enabled"
 
-ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo cp /home/centos/hosts /etc | sudo cp /home/centos/sysctl.conf /etc | sudo cp /home/centos/config /etc/selinux | sudo cp /home/centos/rc.local /etc | sudo cp /home/centos/cloudera-manager.repo /etc/yum.repos.d |sudo mkdir /usr/share/java | sudo cp /home/centos/mysql-connector-java-5.1.42-bin.jar /usr/share/java"
+ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo cp /home/centos/hosts /etc | sudo cp /home/centos/sysctl.conf /etc | sudo cp /home/centos/config /etc/selinux | sudo cp /home/centos/rc.local /etc | sudo cp /home/centos/cloudera-manager.repo /etc/yum.repos.d |sudo mkdir /usr/share/java | sudo cp /home/centos/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar"
 
 ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo yum -y update"
 ssh -i "cluster_test_biba.pem"  centos@${hosts[$k]} "sudo yum -y install ntp nscd wget"
@@ -195,7 +195,7 @@ sudo yum -y install java-1.7.0-openjdk
 
 java -version
 
-cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/
+cp mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar /usr/share/java/mysql-connector-java.jar
 
 sleep 1
 
